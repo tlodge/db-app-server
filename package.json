@@ -1,0 +1,43 @@
+{
+  "name": "databox-app-server",
+  "version": "0.1.0",
+  "description": "A Databox Docker registry front-end",
+  "scripts": {
+    "start": "lsc server.ls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yousefamar/databox-app-server.git"
+  },
+  "keywords": [
+    "databox",
+    "personal",
+    "data",
+    "app",
+    "store",
+    "shop",
+    "docker",
+    "registry",
+    "frontend",
+    "front",
+    "end",
+    "server"
+  ],
+  "author": "Yousef Amar <yousef@amar.io> (http://yousefamar.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yousefamar/databox-app-server/issues"
+  },
+  "homepage": "https://github.com/yousefamar/databox-app-server#readme",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "jade": "^1.11.0",
+    "jstransformer-livescript": "^1.1.1",
+    "livescript": "^1.4.0",
+    "mongodb": "^2.1.7",
+    "nodemailer": "^2.1.0",
+    "request": "^2.69.0"
+  }
+}

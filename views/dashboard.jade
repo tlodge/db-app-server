@@ -1,0 +1,70 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+
+		title Databox Store Dev Dashboard
+
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7', crossorigin='anonymous')
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css', integrity='sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r', crossorigin='anonymous')
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
+		script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS', crossorigin='anonymous')
+
+
+	body
+		.container
+			h1 Databox Store Dev Dashboard
+
+			p Logged in as #{user.username}.
+			p No apps currently needing reviewing.
+
+			#upload-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='upload-modal-label')
+				.modal-dialog(role='document')
+					.modal-content
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-label='Close')
+								span(aria-hidden='true') ×
+							h4#upload-modal-title.modal-title Upload
+						.modal-body
+							.form-group
+								label(for="file-input") App Manifest JSON File
+								input#file-input(type="file")
+								p.help-block Note: It can take a few working days before your app is reviewed and marked secure.
+						.modal-footer
+							button.btn.btn-primary#upload-button(type='button', data-loading-text='Uploading...') Upload
+
+			button.btn.btn-default(type='button', data-toggle='modal', data-target='#upload-modal') Upload App
+
+		script
+			:livescript
+				$ \#upload-button .click !->
+					btn = $ this .button \loading
+					file-input = document.get-element-by-id \file-input
+
+					unless file-input.value
+						btn.button \reset
+						alert 'Please select a manifest file to upload'
+						return
+
+					new FileReader!
+						..onload = (event) !->
+							manifest = JSON.parse event.target.result
+							# TODO: Client-side validation too
+							manifest = JSON.stringify manifest
+
+							res <-! $.post \/app/post { manifest }
+							if res.error?
+								switch res.error
+								| 22 => alert 'Please log in again'; location.reload!
+								| 21 => alert 'Please check manifest file for missing or illegal and upload again'
+								btn.button \reset
+								return
+
+							if res.success
+								alert 'App manifest successfully uploaded'
+								file-input.value = null
+								btn.button \reset
+								$ \#upload-modal .modal \hide
+
+						..read-as-text file-input.files[0]
