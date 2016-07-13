@@ -3,7 +3,7 @@ require! mongodb
 _db = null
 
 connect = (callback) !->
-  err, db <-! mongodb.MongoClient.connect 'mongodb://localhost:27017/datashop'
+  err, db <-! mongodb.MongoClient.connect 'mongodb://mongo:27017/datashop'
   if err then throw err
   _db := db
   callback db
